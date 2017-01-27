@@ -1,4 +1,4 @@
-# GodotHub
+# GodotHub ![travis ci](https://travis-ci.org/Windastella/godothub.svg?branch=master)
 
 Multiplayer and network messaging Server for Godot.
 
