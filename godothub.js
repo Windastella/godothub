@@ -96,6 +96,9 @@ server.on('message', function (data, client) {
         for(var i=0;i<clients.length;i++){
           if (clients[i].ID == data.ID){
 
+            if (clients[i].channel == data.channel)
+              return
+
             multicast({event:"left",msg:clients[i].ID+" left the channel",ID:clients[i].ID}, clients[i].ID, clients[i].channel);
             console.log(clients[i].ID + " left channel "+clients[i].channel);
 
