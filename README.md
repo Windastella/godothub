@@ -6,6 +6,8 @@ The Godot Client code are in written as class which can be instanced through scr
 
 The main idea of GodotHub is to have a thin server that only handle the connection and broadcast the data to channel(lobby).
 
+[GodotHub-Client](https://github.com/Windastella/godothub_client) : Godot Client Implementation
+
 ## Requirement
 
 The GodotHub server only require
