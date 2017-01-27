@@ -4,7 +4,7 @@
   "description": "Godothub",
   "main": "godothub.js",
   "scripts": {
-    "test": "godothub -t"
+    "test": "node godothub.js -t"
   },
   "repository": {
     "type": "git",
