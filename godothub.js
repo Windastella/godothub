@@ -19,11 +19,8 @@ var server = dgram.createSocket('udp4');
 var clients = []
 
 function read_var(data){//Must be Json format
-
-  var dataType = data.readUIntLE(0,4)
-  var dataLength = data.readUIntLE(4,4)
-  data = data.toString();
-  var str = data.substring(data.search("{"),data.lastIndexOf("}")+1)+"\n";
+  data = data.toString(); //Change Buffer to string
+  var str = data.substring(data.search("{"),data.lastIndexOf("}")+1)+"\n"; //retrieve the JSON substring
   return JSON.parse(str);
 }
 
