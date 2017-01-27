@@ -1,5 +1,4 @@
 # GodotHub
-___
 
 Multiplayer and network messaging Server for Godot.
 
@@ -8,7 +7,6 @@ The Godot Client code are in written as class which can be instanced through scr
 The main idea of GodotHub is to have a thin server that only handle the connection and broadcast the data to channel(lobby).
 
 ## Requirement
-___
 
 The GodotHub server only require
 
@@ -17,11 +15,10 @@ The GodotHub server only require
 And... that's it!
 
 ## Installation
-___
 
-After you install NodeJS. Open your terminal/command prompt install it through npm
+After you install NodeJS. Open your terminal / command prompt install it through npm
 
-`npm install github:Windastella/godothub`
+`npm install -g github:Windastella/godothub`
 
 and start the server
 
