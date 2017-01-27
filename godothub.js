@@ -2,14 +2,15 @@
 
 var option = require('commander');
 
-option
-  .version('0.1.0')
-  .option('-p, --port', 'Set Port Number', 5000)
-  .option('-h, --host', 'Set Host Address','localhost')
-  .parse(process.argv);
-
 var PORT = 5000;
 var HOST = 'localhost';
+
+option
+  .version('0.1.0')
+  .usage('[options] <file ...>')
+  .option('-p, --port <n>', 'Set Port Number',(val)=>{return val}, 5000)
+  .option('-h, --host <s>', 'Set Host Address',(val)=>{return val}, 'localhost')
+  .parse(process.argv);
 
 var dgram = require('dgram');
 var server = dgram.createSocket('udp4');
@@ -130,5 +131,4 @@ function multicast(data, id, channel){
   }
 }
 
-console.log(option.port + ":" + option.host)
-//server.bind(option.port, option.host);
+server.bind(option.port, option.host);
