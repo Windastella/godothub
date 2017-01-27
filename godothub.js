@@ -10,6 +10,7 @@ option
   .usage('[options] <file ...>')
   .option('-p, --port <n>', 'Set Port Number',(val)=>{return val}, 5000)
   .option('-h, --host <s>', 'Set Host Address',(val)=>{return val}, 'localhost')
+  .option('-t, --test', 'Testing build')
   .parse(process.argv);
 
 var dgram = require('dgram');
@@ -23,7 +24,6 @@ function read_var(data){//Must be Json format
   var dataLength = data.readUIntLE(4,4)
   data = data.toString();
   var str = data.substring(data.search("{"),data.lastIndexOf("}")+1)+"\n";
-  //console.log("Type:" + dataType + " StrLength: " + dataLength + " BufferLength:" + Buffer.byteLength(data) +" Data:" + str);
   return JSON.parse(str);
 }
 
@@ -48,8 +48,14 @@ function send_var(data,port,address){//data as object
 }
 
 server.on('listening', function () {
+
   var address = server.address();
   console.log('UDP Server listening on ' + address.address + ":" + address.port);
+
+  if (option.test){
+    process.exit(0);
+  }
+
 });
 
 server.on('error',(err) =>{
