@@ -41,7 +41,6 @@ function send_var(data,port,address){//data as object
   response.writeUIntLE(Buffer.byteLength(data),4,4) // Write the length of the string (in bytes)
   response.write(data,8) // Write the actual string
   server.send(response,0,Buffer.byteLength(response), port, address);
-  console.log("Send Data: "+ data);
 }
 
 server.on('listening', function () {
@@ -63,8 +62,6 @@ server.on('message', function (data, client) {
     data = read_var(data);
     var dat = data.data;
 
-    console.log(JSON.stringify(data));
-
     switch (dat.event) {
 
       case "connecting":
@@ -72,7 +69,7 @@ server.on('message', function (data, client) {
         client.channel = data.channel;
         clients.push(client);
 
-        console.log(data.ID + " connected");
+        console.log(client.ID + " connected");
 
         send_var({event:"connected",ID:client.ID}, client.port,client.address);
 
