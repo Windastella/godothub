@@ -10,7 +10,7 @@ The main idea of GodotHub is to have a thin server that only handle the connecti
 ## Requirement
 ___
 
-The GodotHub serevr is so thin you'll on need
+The GodotHub server only require
 
 1. [NodeJS](https://nodejs.org/en/)
 
