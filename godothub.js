@@ -111,6 +111,18 @@ server.on('message', function (data, client) {
         }
         break;
 
+      case "broadcast":
+        broadcast(dat.data, data.ID);
+        break;
+
+      case "unicast":
+        unicast(dat.data, dat.ID);
+        break;
+
+      case "multicast":
+        multicast(dat.data, data.ID);
+        break;
+
       default:
         //console.log("Data:"+JSON.stringify(dat));
         multicast(dat, data.ID, data.channel);
@@ -118,6 +130,7 @@ server.on('message', function (data, client) {
     }
 });
 
+// Send data to every channel
 function broadcast(data, id){
   for(var i=0;i<clients.length;i++){
     if (clients[i].ID != id){
@@ -126,10 +139,21 @@ function broadcast(data, id){
   }
 }
 
+// Send data to a specified channel
 function multicast(data, id, channel){
   for(var i=0;i<clients.length;i++){
     if (clients[i].channel == channel && clients[i].ID != id){
       send_var(data, clients[i].port, client[i].address);
+    }
+  }
+}
+
+// Send data to a specified client
+function unicast(data, id){
+  for(var i=0;i<clients.length;i++){
+    if (clients[i].ID == id){
+      send_var(data, clients[i].port,client[i].address);
+      return
     }
   }
 }
