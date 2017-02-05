@@ -71,7 +71,7 @@ server.on('message', function (data, client) {
 
         console.log(client.ID + " connected");
 
-        send_var({event:"connected",ID:client.ID}, client.port,client.address);
+        unicast({event:"connected",ID:client.ID}, client.ID);
 
         multicast({event:"join",msg:client.ID+" join the channel",ID:client.ID}, client.ID, client.channel);
         console.log(client.ID + " join channel "+client.channel);
@@ -112,20 +112,19 @@ server.on('message', function (data, client) {
         break;
 
       case "broadcast":
-        broadcast(dat.data, data.ID);
+        broadcast(dat, data.ID);
         break;
 
       case "unicast":
-        unicast(dat.data, dat.ID);
+        unicast(dat, dat.ID);
         break;
 
       case "multicast":
-        multicast(dat.data, data.ID);
+        multicast(dat, data.ID, data.channel);
         break;
 
       default:
-        //console.log("Data:"+JSON.stringify(dat));
-        multicast(dat, data.ID, data.channel);
+        unicast(dat, data.ID);//if default send back to sender
         break;
     }
 });
@@ -134,7 +133,7 @@ server.on('message', function (data, client) {
 function broadcast(data, id){
   for(var i=0;i<clients.length;i++){
     if (clients[i].ID != id){
-      send_var(data, clients[i].port,client[i].address);
+      send_var(data, clients[i].port,clients[i].address);
     }
   }
 }
@@ -143,7 +142,7 @@ function broadcast(data, id){
 function multicast(data, id, channel){
   for(var i=0;i<clients.length;i++){
     if (clients[i].channel == channel && clients[i].ID != id){
-      send_var(data, clients[i].port, client[i].address);
+      send_var(data, clients[i].port, clients[i].address);
     }
   }
 }
@@ -152,7 +151,7 @@ function multicast(data, id, channel){
 function unicast(data, id){
   for(var i=0;i<clients.length;i++){
     if (clients[i].ID == id){
-      send_var(data, clients[i].port,client[i].address);
+      send_var(data, clients[i].port,clients[i].address);
       return
     }
   }
