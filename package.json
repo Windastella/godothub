@@ -1,6 +1,6 @@
 {
   "name": "godothub",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Godothub",
   "main": "godothub.js",
   "scripts": {
