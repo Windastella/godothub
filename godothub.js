@@ -15,19 +15,8 @@ option
 var dgram = require('dgram');
 var server = dgram.createSocket('udp4');
 
-var users = db.addCollection('users');
-var clients = []
-
-function pushClient(client){
-  var index = clients.push(client) - 1;
-  users.insert({index, id:client.ID, channel:client.channel, address:client.address, port:client.port });
-}
-
-function removeClient(id){
-  var user = users.findOne({id});
-  clients.splice(user.index);
-  return user;
-}
+var clients = db.addCollection('clients');
+clients.on('insert', function(input) { input.id = input.$loki; });
 
 async function read_var(data){//Must be Json format
   data = data.toString(); //Change Buffer to string
@@ -78,43 +67,43 @@ server.on('message', async function (data, client) {
     switch (dat.event) {
 
       case "connecting":
-        client.ID = client.address+":"+client.port;
+        //client.ID = client.address+":"+client.port;
         client.channel = data.channel;
-        pushClient(client);
+        clients.insert({ channel:client.channel, address:client.address, port:client.port });
+        client = clients.findOne({address:client.address, port:client.port});
 
-        console.log(client.ID + " connected");
+        console.log(client.id + " connected");
 
-        unicast({event:"connected",ID:client.ID}, client.ID);
+        unicast({event:"connected",ID:client.id}, client.id);
 
-        multicast({event:"join",msg:client.ID+" join the channel",ID:client.ID}, client.ID, client.channel);
-        console.log(client.ID + " join channel "+client.channel);
+        multicast({event:"join",msg:client.id+" join the channel",ID:client.id}, client.id, client.channel);
+        console.log(client.id + " join channel "+client.channel);
         break;
 
       case "disconnect":
         console.log(data.ID + " Disconnected");
 
-        var user = removeClient(data.ID);
-        multicast({event:"left",msg:data.ID+" left the channel",ID:data.ID}, data.ID, user.channel);
+        client = clients.findOne({id:data.ID});
+        multicast({event:"left",msg:data.ID+" left the channel",ID:data.ID}, data.ID, client.channel);
 
-        console.log(data.ID + " left channel "+user.channel);
-        users.remove(user);
+        console.log(data.ID + " left channel "+client.channel);
+        clients.remove(client);
 
         break;
 
       case "channel":
-        var user = users.find({id:data.ID});
-        if (user.channel == data.channel)
+        client = clients.find({id:data.ID});
+        if (client.channel == data.channel)
           return
 
-        multicast({event:"left",msg:user.ID+" left the channel",ID:user.ID}, user.ID, user.channel);
-        console.log(user.ID + " left channel "+user.channel);
+        multicast({event:"left",msg:client.ID+" left the channel",ID:client.ID}, client.ID, client.channel);
+        console.log(client.ID + " left channel "+client.channel);
 
-        user.channel = data.channel;
-        clients[user.index].channel = data.channel;
-        users.update(user);
+        client.channel = data.channel;
+        clients.update(client);
 
-        multicast({event:"join",msg:client.ID+" join the channel",ID:clients[i].ID}, clients[i].ID, clients[i].channel);
-        console.log(clients[i].ID + " join channel "+clients[i].channel);
+        multicast({event:"join",msg:client.ID+" join the channel",ID:client.ID}, client.ID, client.channel);
+        console.log(client.ID + " join channel "+client.channel);
 
         break;
 
@@ -142,16 +131,15 @@ server.on('message', async function (data, client) {
 
 // Send data to every channel
 function broadcast(data, id){
-  for(var i=0;i<clients.length;i++){
-    if (clients[i].ID != id){
-      send_var(data, clients[i].port,clients[i].address);
-    }
+  var res = clients.where((o)=>o.id != id);
+  for(var i=0;i<res.length;i++){
+    send_var(data, res[i].port, res[i].address);
   }
 }
 
 // Send data to a specified channel
 function multicast(data, id, channel){
-  var res = users.find({channel});
+  var res = clients.find({channel});
   for(var i=0;i<res.length;i++){
     if ( res[i].id != id){
       send_var(data, res[i].port, res[i].address);
@@ -161,7 +149,7 @@ function multicast(data, id, channel){
 
 // Send data to a specified client
 function unicast(data, id){
-  var res = users.findOne({id});
+  var res = clients.findOne({id});
   send_var(data, res.port, res.address);      
 }
 
