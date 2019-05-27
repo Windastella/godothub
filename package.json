@@ -4,6 +4,7 @@
   "description": "Godothub",
   "main": "godothub.js",
   "scripts": {
+    "start": "node godothub.js",
     "test": "node godothub.js -t"
   },
   "repository": {
@@ -17,6 +18,7 @@
     "godothub": "godothub.js"
   },
   "dependencies": {
-    "commander": "^2.9.0"
+    "commander": "^2.9.0",
+    "lokijs": "^1.5.6"
   }
 }

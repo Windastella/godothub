@@ -49,3 +49,5 @@ jspm_packages
 # dotenv environment variables file
 .env
 
+# loki database file
+memory.db
