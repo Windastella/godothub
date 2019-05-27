@@ -20,6 +20,8 @@ And... that's it!
 
 After you install NodeJS. Open your terminal / command prompt install it through npm
 
+`npm install -g godothub`
+or
 `npm install -g github:Windastella/godothub`
 
 and start the server
