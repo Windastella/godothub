@@ -141,7 +141,7 @@ function broadcast(data, id){
 function multicast(data, id, channel){
   var res = clients.find({channel});
   for(var i=0;i<res.length;i++){
-    if ( res[i].id != id){
+    if ( parseInt(res[i].id) != parseInt(id) ){
       send_var(data, res[i].port, res[i].address);
     }
   }
