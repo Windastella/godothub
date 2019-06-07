@@ -92,18 +92,18 @@ server.on('message', async function (data, client) {
         break;
 
       case "channel":
-        client = clients.find({id:data.ID});
+        client = clients.findOne({id:data.ID});
         if (client.channel == data.channel)
           return
 
-        multicast({event:"left",msg:client.ID+" left the channel",ID:client.ID}, client.ID, client.channel);
-        console.log(client.ID + " left channel "+client.channel);
+        multicast({event:"left",msg:client.id+" left the channel",ID:client.id}, client.id, client.channel);
+        console.log(client.id + " left channel "+client.channel);
 
         client.channel = data.channel;
         clients.update(client);
 
-        multicast({event:"join",msg:client.ID+" join the channel",ID:client.ID}, client.ID, client.channel);
-        console.log(client.ID + " join channel "+client.channel);
+        multicast({event:"join",msg:client.id+" join the channel",ID:client.id}, client.id, client.channel);
+        console.log(client.id + " join channel "+client.channel);
 
         break;
 
@@ -139,11 +139,9 @@ function broadcast(data, id){
 
 // Send data to a specified channel
 function multicast(data, id, channel){
-  var res = clients.find({channel});
+  var res = clients.find({channel, id: {'$ne' : id}});
   for(var i=0;i<res.length;i++){
-    if ( parseInt(res[i].id) != parseInt(id) ){
-      send_var(data, res[i].port, res[i].address);
-    }
+     send_var(data, res[i].port, res[i].address);
   }
 }
 
