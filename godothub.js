@@ -108,19 +108,19 @@ server.on('message', async function (data, client) {
         break;
 
       case "broadcast":
-        broadcast(dat, data.ID);
+        broadcast(dat, dat.ID);
         break;
 
       case "unicast":
-        unicast(dat, data.ID);
+        unicast(dat, dat.ID);
         break;
 
       case "multicast":
-        multicast(dat, data.ID, data.channel);
+        multicast(dat, dat.ID, data.channel);
         break;
 
       default:
-        unicast(dat, data.ID);//if default send back to sender
+        unicast(dat, dat.ID);//if default send back to sender
         break;
     }
 
